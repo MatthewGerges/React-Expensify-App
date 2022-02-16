@@ -1,31 +1,57 @@
 const path = require('path');
+//const MiniCssExtractPlugin = require('mini-css-extract-plugin')
+const ExtractTextPlugin = require('extract-text-webpack-plugin')
+module.exports = (env) => {
+  const isProduction = env === 'production';
+  //const cssExtract =new ExtractTextPlugin('styles.css')
+  const CSSExtract = new ExtractTextPlugin('styles.css')
 
-module.exports = {
-  entry: './src/app.js',
-  output: {
-    path: path.join(__dirname, 'public'),
-    filename: 'bundle.js'
-  },
-  module: {
-    rules: [{
-      loader: 'babel-loader',
-      test: /\.js$/,
-      exclude: /node_modules/
-    }, {
-      test: /\.s?css$/, 
-      use: [
-        'style-loader',
-        'css-loader',
-        'sass-loader'
-      ]
-    }]
-  },
-  devtool: 'cheap-modeule-eval-source-map',
-  devServer: {
-    contentBase: path.join(__dirname, 'public'),
-    historyApiFallback: true
+  console.log('env', env)
+  return {
+    entry: './src/app.js',
+    output: {
+      path: path.join(__dirname, 'public'),
+      filename: 'bundle.js'
+    },
+    module: {
+      rules: [{
+        loader: 'babel-loader',
+        test: /\.js$/,
+        exclude: /node_modules/
+      }, {
+        test: /\.s?css$/, 
+        use: CSSExtract.extract({
+          use: [
+            {
+              loader: 'css-loader',
+              options: {
+                sourceMap: true
+              }
+            },
+            {
+              loader: 'sass-loader',
+              options: {
+                sourceMap: true
+              }
+            }
+          ]
+        })
+      }]
+    },
+    plugins: [
+      CSSExtract
+  ],
+    devtool: isProduction ? 'source-map' : 'inline-cheap-module-source-map',
+    devServer: {
+      contentBase: path.join(__dirname, 'public'),
+      historyApiFallback: true
+    } 
   }
-};
+}
+//returning a function instead of an object
+// module.exports = {
+  
+// };
 //.css dollar sign tells you to target files ending in .css
 //use allows you to specify an array of loaders
 //loader sass - loader converts scss to css

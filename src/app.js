@@ -16,6 +16,7 @@ import 'react-dates/initialize';
 
 const store = configureStore();
 
+// console.log('testing')
 // addExpense -> waterBill
 // addExpense -> Gas bill
 // setTextFilter -> bill (2 items) -> water (1 item)
